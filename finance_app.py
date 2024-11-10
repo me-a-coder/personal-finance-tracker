@@ -4,14 +4,13 @@ import plotly.express as px
 import oracledb
 from datetime import datetime
 
-# Database connection function
 oracledb.init_oracle_client(lib_dir=r"C:\oraclexe\app\oracle\product\11.2.0\server\bin")
 def get_database_connection():
     connection = oracledb.connect(
     user="SYSTEM",
     password="10CGPAkasapna",
     host="localhost",
-    port=1521,       # this is optional
+    port=1521,       
     service_name="XE"
 )
     return connection
@@ -20,7 +19,6 @@ def get_database_connection():
 def main():
     st.title("Personal Finance Manager")
     
-    # Sidebar navigation
     page = st.sidebar.selectbox(
         "Select Page",
         ["Dashboard", "Add Transaction", "View Transactions"]
@@ -36,7 +34,6 @@ def main():
 def show_dashboard():
     conn = get_database_connection()
     
-    # Get summary statistics
     cursor = conn.cursor()
     cursor.execute("""
         SELECT 
@@ -47,13 +44,11 @@ def show_dashboard():
     """)
     income, expense = cursor.fetchone()
     
-    # Display metrics
     col1, col2, col3 = st.columns(3)
     col1.metric("Monthly Income", f"₹{income:,.2f}")
     col2.metric("Monthly Expenses", f"₹{expense:,.2f}")
     col3.metric("Net Savings", f"₹{income - expense:,.2f}")
     
-    # Category-wise breakdown
     cursor.execute("""
         SELECT category, SUM(amount) as total
         FROM transactions
@@ -62,7 +57,6 @@ def show_dashboard():
     """)
     df_categories = pd.DataFrame(cursor.fetchall(), columns=['Category', 'Amount'])
     
-    # Plot pie chart
     fig = px.pie(df_categories, values='Amount', names='Category', 
                  title='Expense Distribution by Category')
     st.plotly_chart(fig)
@@ -70,7 +64,6 @@ def show_dashboard():
 def add_transaction_page():
     st.header("Add New Transaction")
     
-    # Transaction form
     amount = st.number_input("Amount", min_value=0.0)
     category = st.selectbox("Category", ["Food", "Transport", "Utilities", "Entertainment", "Other"])
     description = st.text_input("Description")
