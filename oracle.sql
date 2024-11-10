@@ -1,36 +1,31 @@
-CREATE TABLE users (
+CREATE TABLE transactions (
     id NUMBER PRIMARY KEY,
-    username VARCHAR2(50) UNIQUE,
-    password_hash VARCHAR2(256),
-    email VARCHAR2(100),
-    created_at TIMESTAMP DEFAULT SYSTIMESTAMP
+    date_time TIMESTAMP,
+    amount NUMBER(10,2),
+    category VARCHAR2(50),
+    description VARCHAR2(200),
+    type VARCHAR2(20),
+    CONSTRAINT type_check CHECK (type IN ('INCOME', 'EXPENSE'))
 );
 
-CREATE TABLE accounts (
+CREATE TABLE categories (
     id NUMBER PRIMARY KEY,
-    user_id NUMBER,
-    bank_name VARCHAR2(50),
-    account_number VARCHAR2(50),
-    balance NUMBER(15,2),
-    last_synced TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    name VARCHAR2(50),
+    type VARCHAR2(20)
 );
 
-CREATE TABLE goals (
-    id NUMBER PRIMARY KEY,
-    user_id NUMBER,
-    name VARCHAR2(100),
-    target_amount NUMBER(15,2),
-    current_amount NUMBER(15,2),
-    deadline DATE,
-    FOREIGN KEY (user_id) REFERENCES users(id)
-);
+-- Create sequence for IDs
+CREATE SEQUENCE trans_seq START WITH 1;
 
-CREATE TABLE achievements (
-    id NUMBER PRIMARY KEY,
-    user_id NUMBER,
-    badge_name VARCHAR2(50),
-    points NUMBER,
-    earned_at TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id)
-);
+-- Stored procedure for adding transactions
+CREATE OR REPLACE PROCEDURE add_transaction(
+    p_amount IN NUMBER,
+    p_category IN VARCHAR2,
+    p_description IN VARCHAR2,
+    p_type IN VARCHAR2
+) AS
+BEGIN
+    INSERT INTO transactions (id, date_time, amount, category, description, type)
+    VALUES (trans_seq.NEXTVAL, SYSTIMESTAMP, p_amount, p_category, p_description, p_type);
+    COMMIT;
+END;
