@@ -1,4 +1,3 @@
--- ORACLE SQL
 CREATE TABLE transactions (
     id NUMBER PRIMARY KEY,
     date_time TIMESTAMP,
