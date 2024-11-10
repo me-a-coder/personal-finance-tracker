@@ -14,10 +14,8 @@ CREATE TABLE categories (
     type VARCHAR2(20)
 );
 
--- Create sequence for IDs
 CREATE SEQUENCE trans_seq START WITH 1;
 
--- Stored procedure for adding transactions
 CREATE OR REPLACE PROCEDURE add_transaction(
     p_amount IN NUMBER,
     p_category IN VARCHAR2,
