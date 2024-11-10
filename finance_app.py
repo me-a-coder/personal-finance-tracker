@@ -15,7 +15,6 @@ def get_database_connection():
 )
     return connection
 
-# Main app
 def main():
     st.title("Personal Finance Manager")
     
