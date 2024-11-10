@@ -5,13 +5,15 @@ import oracledb
 from datetime import datetime
 
 # Database connection function
+oracledb.init_oracle_client(lib_dir=r"C:\oraclexe\app\oracle\product\11.2.0\server\bin")
 def get_database_connection():
-    dsn_tns=oracledb.makedsn('localhost','8080',service_name='OracleODBC')
     connection = oracledb.connect(
-        user="SYSTEM",
-        password="10CGPAkasapna",
-        dsn=dsn_tns
-    )
+    user="SYSTEM",
+    password="10CGPAkasapna",
+    host="localhost",
+    port=1521,       # this is optional
+    service_name="XE"
+)
     return connection
 
 # Main app
